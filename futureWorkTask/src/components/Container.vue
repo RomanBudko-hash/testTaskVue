@@ -4,10 +4,11 @@
   </div>
 </template>
 
-<style lang="scss">
+<style scope lang="scss">
+  @import './../assets/variables.scss';
   .container{
     margin: 0 auto;
-    max-width: 1366px;
+    max-width: $containerMaxWidth;
     padding: 50px;
   }
 </style>

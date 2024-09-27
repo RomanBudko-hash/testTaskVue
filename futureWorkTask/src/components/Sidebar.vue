@@ -27,7 +27,8 @@
   .sidebar{
     height: 100%;
     width: 290px;
-    padding: 27px 0 0 20px;
+    padding: 27px 36px 0 20px;
+    border-right: 1px solid #DEDEDD;
   }
   .search{
     display: flex;
