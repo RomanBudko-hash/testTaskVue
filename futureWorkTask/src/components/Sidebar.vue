@@ -1,7 +1,23 @@
-<script setup>
-  import {ref} from 'vue'
-  const search = ref('')
+<script>
+import { useStore } from 'vuex';
+import { computed } from 'vue';
+export default{
+  setup(){
+    const store = useStore();
 
+    const inputValue = computed(() => store.state.inputValue);
+    const loadProfiles = () => store.dispatch('fetchProfileList', inputValue.value);
+    const changeInputValue = (event) => {
+         store.commit('setInputValue', event.target.value);
+         loadProfiles()
+      }
+
+    return{
+      inputValue,
+      changeInputValue
+    }
+  }
+}
 </script>
 
 <template>
@@ -10,12 +26,18 @@
       <div class="search-title">
         Поиск сотрудников
       </div>
-      <input class="search-input" type="text" placeholder="Введите Id или имя" v-model="search">
+      <input
+        :value="inputValue"
+        type="text"
+        placeholder="Введите Id или имя"
+        class="search-input"
+        @input="changeInputValue"
+      >
       <div class="search-result">
         Результаты
       </div>
     </div>
-    <div class="result-table" v-if="search">
+    <div class="result-table" v-if="inputValue">
       //:TODO
     </div>
     <div class="result-table-nothing" v-else>
@@ -23,6 +45,7 @@
     </div>
   </aside>
 </template>
+
 <style scope lang="scss">
   .sidebar{
     height: 100%;
