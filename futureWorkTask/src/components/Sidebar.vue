@@ -1,23 +1,29 @@
-<script>
+<script setup>
 import { useStore } from 'vuex';
-import { computed } from 'vue';
-export default{
-  setup(){
-    const store = useStore();
+import { computed, ref } from 'vue';
+import MiniProfile from './MiniProfile.vue';
 
-    const inputValue = computed(() => store.state.inputValue);
-    const loadProfiles = () => store.dispatch('fetchProfileList', inputValue.value);
-    const changeInputValue = (event) => {
-         store.commit('setInputValue', event.target.value);
-         loadProfiles()
-      }
+const store = useStore();
 
-    return{
-      inputValue,
-      changeInputValue
-    }
+const inputValue = computed(() => store.state.inputValue);
+const loadProfiles = () => store.dispatch('fetchProfileList', inputValue.value);
+
+const currentInputValue = ref('');
+let timeoutId = null;
+const changeInputValue = (event) => {
+  currentInputValue.value = event.target.value;
+  store.commit('setInputValue', event.target.value);
+
+  if(timeoutId) {
+    clearTimeout(timeoutId);
   }
+  timeoutId = setTimeout(() => {
+    loadProfiles()
+  }, 1000);
 }
+const selectProfile = (employeeCard) => {
+  store.commit('setSelectedProfile', employeeCard);
+};
 </script>
 
 <template>
@@ -37,10 +43,15 @@ export default{
         Результаты
       </div>
     </div>
-    <div class="result-table" v-if="inputValue">
-      //:TODO
-    </div>
-    <div class="result-table-nothing" v-else>
+      <MiniProfile
+        v-if="$store.state.profileList.length > 0"
+        v-for="employeeCard in $store.state.profileList"
+        :key="employeeCard.id"
+        :employeeCard="employeeCard"
+        :isActive="employeeCard === $store.state.selectedProfile"
+        @select-profile="selectProfile"
+      />
+    <div class="start-search" v-else>
       Начните поиск
     </div>
   </aside>
@@ -76,13 +87,10 @@ export default{
       line-height: 22.4px;
     }
   }
-  .result-table{
-
-    &-nothing{
-      margin-top: 10px;
-      font-size: 14px;
-      font-weight: 400;
-      color: #76787D;
-    }
+  .start-search{
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #76787D;
   }
 </style>

@@ -4,7 +4,8 @@ const store = createStore({
   state () {
     return {
       inputValue: '',
-      profileList: []
+      profileList: [],
+      selectedProfile: null
     }
   },
   mutations: {
@@ -13,6 +14,9 @@ const store = createStore({
     },
     setProfileList (state, payload) {
       state.profileList = payload
+    },
+    setSelectedProfile (state, payload) {
+        state.selectedProfile = payload
     }
   },
   actions: {
@@ -28,7 +32,6 @@ const store = createStore({
               }
 
             const json = await response.json();
-            console.log(json) // TODO to remove this, just for testing
             commit('setProfileList', json);
           } else {
             commit('setProfileList', []);
