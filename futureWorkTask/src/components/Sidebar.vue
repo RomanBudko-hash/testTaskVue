@@ -6,7 +6,13 @@ import MiniProfile from './MiniProfile.vue';
 const store = useStore();
 
 const inputValue = computed(() => store.state.inputValue);
-const loadProfiles = () => store.dispatch('fetchProfileList', inputValue.value);
+
+const isLoading = ref(false);
+const loadProfiles = async () => {
+  isLoading.value = true;
+  await store.dispatch('fetchProfileList', inputValue.value);
+  isLoading.value = false;
+};
 
 const currentInputValue = ref('');
 let timeoutId = null;
@@ -43,6 +49,7 @@ const selectProfile = (employeeCard) => {
         Результаты
       </div>
     </div>
+    <div v-if="isLoading" class="loader">Loading</div>
       <MiniProfile
         v-if="$store.state.profileList.length > 0"
         v-for="employeeCard in $store.state.profileList"
@@ -92,5 +99,12 @@ const selectProfile = (employeeCard) => {
     font-size: 14px;
     font-weight: 400;
     color: #76787D;
+  }
+  .loader{
+    text-align: center;
+    font-size: 16px;
+    font-weight: 400;
+    color: #000000;
+    margin: 10px 0;
   }
 </style>
